@@ -13,7 +13,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<your-username>/cokonet-lms-gitops.git
+    repoURL: https://github.com/vishnu-mohan-9447/cokonet-lms-gitops.git
     targetRevision: main
     path: plain-manifests
   destination:
