@@ -1,7 +1,5 @@
-# Type LoadBalancer provisions an AWS NLB/ELB directly - simplest way to get
-# external access without also standing up an Ingress controller. Swap to
-# ClusterIP + the commented Ingress below once you want a proper Ingress
-# controller (nginx-ingress/ALB) fronting this.
+# Fronted by the nginx-ingress controller (see ingress.yaml) rather than
+# provisioning its own separate AWS load balancer.
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,4 +11,4 @@ spec:
   ports:
     - port: 80
       targetPort: 8080
-  type: LoadBalancer
+  type: ClusterIP

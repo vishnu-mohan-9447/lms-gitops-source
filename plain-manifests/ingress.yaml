@@ -1,0 +1,26 @@
+# Routes external traffic through the nginx-ingress controller (installed
+# via Helm/Terraform in prod-eks) to the frontend Service. Get the
+# controller's external LB hostname with:
+#   kubectl get svc -n nginx-ingress nginx-ingress-controller
+# and point DNS (or just test directly against the LB hostname with a
+# Host header) at it.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lms-frontend
+  namespace: lms
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: lms.example.com   # <-- replace with your real domain once you have one
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lms-frontend
+                port:
+                  number: 80
