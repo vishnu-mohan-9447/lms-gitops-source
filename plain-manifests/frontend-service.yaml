@@ -1,0 +1,16 @@
+# Type LoadBalancer provisions an AWS NLB/ELB directly - simplest way to get
+# external access without also standing up an Ingress controller. Swap to
+# ClusterIP + the commented Ingress below once you want a proper Ingress
+# controller (nginx-ingress/ALB) fronting this.
+apiVersion: v1
+kind: Service
+metadata:
+  name: lms-frontend
+  namespace: lms
+spec:
+  selector:
+    app: lms-frontend
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
