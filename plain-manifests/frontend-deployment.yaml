@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: lms-frontend
-          image: REPLACE_DOCKERHUB_NAMESPACE/lms-frontend:REPLACE_IMAGE_TAG
+          image: vishnumohan9447/lms-frontend:23
           ports:
             - containerPort: 8080
           readinessProbe:
