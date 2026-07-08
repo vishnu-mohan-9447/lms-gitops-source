@@ -25,17 +25,3 @@ spec:
       selfHeal: true    # revert manual kubectl edits back to what's in git
     syncOptions:
       - CreateNamespace=true
-  ignoreDifferences:
-    # HPA (not git) owns replica count once it's active - without this,
-    # selfHeal fights the autoscaler and scales back down to whatever's
-    # hardcoded in the Deployment YAML on every reconcile.
-    - group: apps
-      kind: Deployment
-      name: lms-backend
-      jsonPointers:
-        - /spec/replicas
-    - group: apps
-      kind: Deployment
-      name: lms-frontend
-      jsonPointers:
-        - /spec/replicas
