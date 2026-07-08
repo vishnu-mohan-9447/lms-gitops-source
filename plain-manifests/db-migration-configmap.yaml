@@ -4,10 +4,17 @@ metadata:
   name: lms-db-migration-sql
   namespace: lms
   annotations:
-    # Keep this in sync manually with Lms-App/database/init.sql in the app
-    # repo whenever the schema changes - this is a duplicated copy on
-    # purpose, since ArgoCD only syncs from this gitops repo, not the app
-    # repo. See README for the process to update it.
+    # Must be a PreSync hook (not just sync-wave) so it runs in the SAME
+    # ArgoCD phase as the migration Job below, and before it (wave -1 vs
+    # the Job's default wave 0). A sync-wave alone on a non-hook resource
+    # does nothing to order it against PreSync hooks - they're separate
+    # phases entirely.
+    #
+    # Deliberately NO hook-delete-policy here (unlike the Job) - ArgoCD
+    # would consider this ConfigMap "Synced" the instant it's created and
+    # could delete it before the Job (same phase, later wave) gets a
+    # chance to mount it. ConfigMaps are cheap to just leave in place.
+    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-1"
 data:
   init.sql: |
