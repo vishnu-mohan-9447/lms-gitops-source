@@ -1,0 +1,50 @@
+# Runs Lms-App/database/init.sql (as embedded in configmap.yaml, right
+# above this file) against RDS automatically before every ArgoCD sync.
+# Safe to re-run on every sync because init.sql only uses CREATE TABLE IF
+# NOT EXISTS / INSERT ... ON CONFLICT DO NOTHING - it never fails or
+# duplicates data on a second run.
+#
+# ArgoCD hook lifecycle: PreSync = runs and must succeed before ArgoCD
+# applies the rest of this sync wave's resources. hook-delete-policy
+# HookSucceeded means the Job/Pod get cleaned up automatically after a
+# successful run, but are left in place if it fails, so you can inspect
+# `kubectl logs` for debugging - delete it manually once you're done
+# investigating a failure.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lms-db-migration
+  namespace: lms
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f /sql/init.sql
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lms-backend-secret
+                  key: DB_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: lms-backend-config
+          volumeMounts:
+            - name: migration-sql
+              mountPath: /sql
+              readOnly: true
+      volumes:
+        - name: migration-sql
+          configMap:
+            name: lms-db-migration-sql
