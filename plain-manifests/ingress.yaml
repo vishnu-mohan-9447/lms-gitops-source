@@ -14,8 +14,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: lms.example.com   # <-- replace with your real domain once you have one
-      http:
+ # //  - host: lms.example.com   # <-- replace with your real domain once you have one
+    -  http:
         paths:
           - path: /
             pathType: Prefix
