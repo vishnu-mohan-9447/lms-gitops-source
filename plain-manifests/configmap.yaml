@@ -3,6 +3,12 @@ kind: ConfigMap
 metadata:
   name: lms-backend-config
   namespace: lms
+  annotations:
+    # PreSync hook, earliest wave - this has no dependencies of its own,
+    # and both the ExternalSecret's Secret (wave -1) and the migration Job
+    # (wave 0) need it to exist first.
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
 data:
   PORT: "5000"
   NODE_ENV: "production"

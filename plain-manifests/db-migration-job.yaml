@@ -17,10 +17,13 @@ metadata:
   name: lms-db-migration
   namespace: lms
   annotations:
+    # PreSync wave 0 (default) - runs last in the PreSync chain, after
+    # Namespace (-3), ClusterSecretStore/ConfigMaps (-2), ExternalSecret (-1).
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
-  backoffLimit: 2
+  backoffLimit: 4
+  activeDeadlineSeconds: 300
   template:
     spec:
       restartPolicy: Never

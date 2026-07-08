@@ -15,7 +15,7 @@ metadata:
     # could delete it before the Job (same phase, later wave) gets a
     # chance to mount it. ConfigMaps are cheap to just leave in place.
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "-2"
 data:
   init.sql: |
     -- ============================================================
