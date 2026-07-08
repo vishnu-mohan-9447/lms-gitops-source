@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: lms-frontend
-          image: vishnumohan9447/lms-frontend:27
+          image: vishnumohan9447/lms-frontend:4
           ports:
             - containerPort: 8080
           readinessProbe:
