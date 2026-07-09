@@ -13,7 +13,7 @@ spec:
       targetRevision: 58.0.0
       helm:
         valueFiles:
-          - $values/monitoring/prometheus-values.yaml
+          - $values/helm-values/kube-prometheus-stack.yaml
 
     - repoURL: https://github.com/vishnu-mohan-9447/lms-gitops-source.git
       targetRevision: main
