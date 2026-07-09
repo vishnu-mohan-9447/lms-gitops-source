@@ -1,10 +1,20 @@
 grafana:
   enabled: true
 
-  adminPassword: admin123
+  # No adminPassword set on purpose - the chart auto-generates a random
+  # one into a Secret if omitted, same pattern as ArgoCD's own initial
+  # admin password. Retrieve it with:
+  #   kubectl get secret -n monitoring monitoring-grafana \
+  #     -o jsonpath='{.data.admin-password}' | base64 -d
 
   persistence:
     enabled: false
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - grafana.cokonet.local   # placeholder - swap for your real domain once you have one, same pattern as the argocd/lms Ingresses
 
 prometheus:
   prometheusSpec:
