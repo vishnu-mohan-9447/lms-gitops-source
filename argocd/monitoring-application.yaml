@@ -11,19 +11,27 @@ spec:
     chart: kube-prometheus-stack
     helm:
       releaseName: monitoring
-      valuesObject:
+      values:
         grafana:
           persistence:
             enabled: false
+          resources:
+            requests:
+              cpu: 100m
+              memory: 200Mi
         prometheus:
           prometheusSpec:
+            resources:
+              requests:
+                cpu: 200m
+                memory: 400Mi
             storageSpec:
               volumeClaimTemplate:
                 spec:
                   storageClassName: ""
                   resources:
                     requests:
-                      storage: 1Gi
+                      storage: 2Gi
         alertmanager:
           enabled: false
   destination:
