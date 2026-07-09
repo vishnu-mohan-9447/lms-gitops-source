@@ -8,7 +8,9 @@ grafana:
   #     -o jsonpath='{.data.admin-password}' | base64 -d
 
   persistence:
-    enabled: false
+    enabled: true
+    storageClassName: gp3 # created by Terraform (kubernetes_storage_class_v1.gp3)
+    size: 5Gi
 
   ingress:
     enabled: true
@@ -20,7 +22,14 @@ prometheus:
   prometheusSpec:
     retention: 7d
 
-    storageSpec: {}
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
 
     resources:
       requests:
@@ -34,7 +43,14 @@ alertmanager:
   enabled: true
 
   alertmanagerSpec:
-    storage: {}
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
 
 kubeStateMetrics:
   enabled: true
