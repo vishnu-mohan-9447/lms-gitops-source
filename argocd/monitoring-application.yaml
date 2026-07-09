@@ -6,11 +6,26 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/vishnu-mohan-9447/lms-gitops-source.git
-    targetRevision: main
-    path: monitoring
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: "25.8.0"
+    chart: kube-prometheus-stack
     helm:
       releaseName: monitoring
+      valuesObject:
+        grafana:
+          persistence:
+            enabled: false
+        prometheus:
+          prometheusSpec:
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: ""
+                  resources:
+                    requests:
+                      storage: 1Gi
+        alertmanager:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
