@@ -34,19 +34,19 @@ write:
   replicas: 0
 
 # The chart enables these by default even without explicit config here.
-# They're optional performance add-ons, not required for Loki to work:
-#   - chunksCache/resultsCache: memcached-backed query caches, useful at
-#     higher query volume than this project has
-#   - lokiCanary: Grafana Labs' own synthetic write/read health-check tool,
-#     diagnostic only, not part of the actual log pipeline
-# All three were causing scheduling failures (memory pressure / pod-count
-# ceiling / a NodeAffinity mismatch) without adding real value at this
-# scale - disabled rather than solved by adding yet more node capacity.
+# chunksCache/resultsCache are optional memcached-backed query caches,
+# useful at higher query volume than this project has - safe to disable.
+#
+# lokiCanary CANNOT be disabled on its own with this chart version: the
+# chart's own templates/validate.yaml hard-fails template rendering
+# entirely ("Helm test requires the Loki Canary to be enabled") if it's
+# off, which blocks ArgoCD from generating manifests for anything in this
+# Application, not just the canary. Left enabled; its earlier NodeAffinity
+# scheduling issue should resolve on its own now that there are 4 nodes
+# instead of 2 - recheck with `kubectl get pods -n monitoring | grep canary`
+# after this syncs and only chase it further if a pod is still stuck.
 chunksCache:
   enabled: false
 
 resultsCache:
-  enabled: false
-
-lokiCanary:
   enabled: false
