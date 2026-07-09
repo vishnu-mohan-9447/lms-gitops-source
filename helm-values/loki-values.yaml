@@ -1,6 +1,11 @@
 loki:
+  useTestSchema: true
+
+  auth_enabled: false
+
   persistence:
     enabled: false
+
   resources:
     requests:
       cpu: 100m
@@ -9,11 +14,16 @@ loki:
       cpu: 200m
       memory: 600Mi
 
-promtail:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 100Mi
-    limits:
-      cpu: 100m
-      memory: 200Mi
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+
+backend:
+  replicas: 0
+
+read:
+  replicas: 0
+
+write:
+  replicas: 0
