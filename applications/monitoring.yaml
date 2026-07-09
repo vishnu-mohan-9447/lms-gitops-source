@@ -30,3 +30,13 @@ spec:
 
     syncOptions:
       - CreateNamespace=true
+      # Required for kube-prometheus-stack: its CRDs (Alertmanager,
+      # Prometheus, PrometheusAgent, ThanosRuler) have OpenAPI schemas
+      # large enough that client-side apply's
+      # kubectl.kubernetes.io/last-applied-configuration annotation
+      # exceeds Kubernetes' hard 256KiB annotation limit
+      # ("metadata.annotations: Too long"). Server-side apply tracks field
+      # ownership server-side instead of stuffing the whole manifest into
+      # an annotation, which avoids this entirely. This is the standard,
+      # widely-documented fix for this exact chart+ArgoCD combination.
+      - ServerSideApply=true
