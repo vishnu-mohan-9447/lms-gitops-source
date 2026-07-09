@@ -32,3 +32,21 @@ read:
 
 write:
   replicas: 0
+
+# The chart enables these by default even without explicit config here.
+# They're optional performance add-ons, not required for Loki to work:
+#   - chunksCache/resultsCache: memcached-backed query caches, useful at
+#     higher query volume than this project has
+#   - lokiCanary: Grafana Labs' own synthetic write/read health-check tool,
+#     diagnostic only, not part of the actual log pipeline
+# All three were causing scheduling failures (memory pressure / pod-count
+# ceiling / a NodeAffinity mismatch) without adding real value at this
+# scale - disabled rather than solved by adding yet more node capacity.
+chunksCache:
+  enabled: false
+
+resultsCache:
+  enabled: false
+
+lokiCanary:
+  enabled: false
