@@ -3,24 +3,30 @@ kind: Application
 metadata:
   name: loki
   namespace: argocd
+
 spec:
   project: default
-  source:
-    repoURL: https://grafana.github.io/helm-charts
-    targetRevision: "6.0.0"
-    chart: loki
-    helm:
-      releaseName: loki
-      valuesObject:
-        loki:
-          persistence:
-            enabled: false
+
+  sources:
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: loki
+      targetRevision: 6.0.0
+      helm:
+        valueFiles:
+          - $values/monitoring/loki-values.yaml
+
+    - repoURL: https://github.com/vishnu-mohan-9447/lms-gitops-source.git
+      targetRevision: main
+      ref: values
+
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+
     syncOptions:
       - CreateNamespace=true

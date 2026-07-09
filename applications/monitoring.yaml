@@ -3,32 +3,30 @@ kind: Application
 metadata:
   name: monitoring
   namespace: argocd
+
 spec:
   project: default
+
   sources:
     - repoURL: https://prometheus-community.github.io/helm-charts
-      targetRevision: "25.8.0"
-      chart: prometheus
+      chart: kube-prometheus-stack
+      targetRevision: 58.0.0
       helm:
-        releaseName: prometheus
-        valuesObject:
-          server:
-            persistentVolume:
-              enabled: false
-    - repoURL: https://grafana.github.io/helm-charts
-      targetRevision: "8.5.0"
-      chart: grafana
-      helm:
-        releaseName: grafana
-        valuesObject:
-          persistence:
-            enabled: false
+        valueFiles:
+          - $values/monitoring/prometheus-values.yaml
+
+    - repoURL: https://github.com/vishnu-mohan-9447/lms-gitops-source.git
+      targetRevision: main
+      ref: values
+
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+
     syncOptions:
       - CreateNamespace=true
